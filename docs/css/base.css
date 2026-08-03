@@ -107,9 +107,11 @@ hr.sep {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .brand {
-  display: flex; flex-direction: column; gap: 1px;
+  display: flex; align-items: center; gap: 12px;
   text-decoration: none; line-height: 1.1;
 }
+.brand .b-mark { height: 42px; width: auto; }
+.brand .b-text { display: flex; flex-direction: column; gap: 1px; }
 .brand .b-name {
   font-family: 'Cormorant', Georgia, serif;
   font-size: 1.18rem; font-weight: 700; letter-spacing: .04em;
@@ -147,6 +149,21 @@ hr.sep {
   .nav-desktop { display: none; }
   .burger { display: flex; }
 }
+
+.theme-btn {
+  width: 42px; height: 42px; flex: none;
+  border-radius: 50%; border: 1px solid var(--line-dark);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-hi);
+  transition: background .2s;
+}
+.theme-btn:hover { background: rgba(232, 205, 154, .12); }
+.theme-btn svg { width: 19px; height: 19px; }
+.theme-btn .ic-sun { display: none; }
+html[data-theme="dark"] .theme-btn .ic-sun { display: block; }
+html[data-theme="dark"] .theme-btn .ic-moon { display: none; }
+.theme-btn span { display: flex; }
 
 /* мобильное меню */
 .mobile-menu {
@@ -472,6 +489,7 @@ body.menu-open { overflow: hidden; }
 .g-hero .lead { color: rgba(240, 231, 212, .82); max-width: 52ch; }
 .g-hero-photo img { border-radius: 16px; box-shadow: 0 26px 52px -18px rgba(0,0,0,.55); max-height: 430px; width: 100%; object-fit: cover; }
 .g-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 30px; }
+.g-buy-btns { display: flex; flex-wrap: wrap; gap: 12px; }
 .g-buy .g-price-big {
   font-family: 'Cormorant', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold-hi);
   font-variant-numeric: tabular-nums;
@@ -542,8 +560,15 @@ body.menu-open { overflow: hidden; }
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   align-items: center; gap: 14px; justify-content: space-between;
 }
-.sticky-buy .sb-price { font-family: 'Cormorant', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-hi); white-space: nowrap; }
+.sticky-buy .sb-price { font-family: 'Cormorant', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-hi); white-space: nowrap; margin-right: auto; }
 .sticky-buy .btn { padding: 12px 22px; min-height: 46px; font-size: .88rem; }
+.sticky-buy .sb-tg {
+  width: 46px; height: 46px; flex: none;
+  border-radius: 50%; border: 1.5px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-hi);
+}
+.sticky-buy .sb-tg svg { width: 20px; height: 20px; }
 @media (max-width: 760px) { .sticky-buy.visible { display: flex; } body.has-sticky-buy { padding-bottom: 72px; } }
 
 /* ---------- футер ---------- */
@@ -579,3 +604,29 @@ html.js .reveal.in {
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal { opacity: 1; transform: none; }
 }
+
+/* ---------- тёмная тема ---------- */
+
+html[data-theme="dark"] {
+  --bg:       #1C130E;
+  --bg-soft:  #211710;
+  --card:     #2B1F17;
+  --ink:      #EFE6D3;
+  --ink-soft: #D9CCB6;
+  --muted:    #A8977F;
+  --line:     rgba(226, 193, 133, .22);
+  --shadow:   0 10px 30px -12px rgba(0, 0, 0, .55);
+}
+html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+html[data-theme="dark"] a { color: var(--gold-hi); }
+html[data-theme="dark"] a:hover { color: #fff; }
+html[data-theme="dark"] .btn-outline { color: var(--gold-hi); border-color: var(--gold); }
+html[data-theme="dark"] .btn-outline:hover { background: rgba(232, 205, 154, .12); color: var(--gold-hi); }
+html[data-theme="dark"] .guide-card h3 a { color: var(--ink); }
+html[data-theme="dark"] .g-more { color: var(--ink-soft); }
+html[data-theme="dark"] .guide-card .g-price,
+html[data-theme="dark"] .price-row .p-time { color: var(--gold-hi); }
+html[data-theme="dark"] .section-dark { background: linear-gradient(180deg, #241812 0%, #1B120D 100%); }
+html[data-theme="dark"] .hero { background: radial-gradient(120% 120% at 85% 10%, #3A2A1E 0%, #241812 55%, #1B120D 100%); }
+
+.nav-desktop a { white-space: nowrap; }

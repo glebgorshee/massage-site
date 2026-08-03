@@ -16,7 +16,9 @@ def _v(rel):
 PHONE_RAW = '79152438842'
 PHONE_PRETTY = '+7 (915) 243-88-42'
 BRAND = 'Андрей Булатный'
-BRAND_FULL = 'Студия массажа Андрея Булатного'
+BRAND_FULL = 'Клуб восстановления Андрея Булатного'
+BRAND_SUB = 'клуб восстановления'
+TG = 'https://t.me/MassageTaganka'
 INN = '505601883579'
 FIO = 'Шмаров Андрей Владимирович'
 
@@ -88,12 +90,11 @@ ICONS = {
  'activity':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>',
  'flame':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
  'sun':     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+ 'moon':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+ 'tg':      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 21.5 11 14l-7.5-3.5L21.5 3.5z"/><path d="M11 14 21.5 3.5"/></svg>',
 }
 
-FAVICON = ("data:image/svg+xml," + urllib.parse.quote(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
-    '<rect width="64" height="64" rx="14" fill="#241812"/>'
-    '<text x="32" y="45" font-family="Georgia,serif" font-size="34" font-weight="700" fill="#E2C185" text-anchor="middle">АБ</text></svg>'))
+# favicon: docs/img/favicon.png (знак на шоколадном фоне)
 
 # ---------------------------------------------------------------- каркас
 def nav_links(root):
@@ -102,7 +103,7 @@ def nav_links(root):
         ('%skurs/' % root, 'Курс'),
         ('%sonline/' % root, 'Онлайн-приём'),
         ('%s#about' % root, 'Обо мне'),
-        ('%s#price' % root, 'Прайс студии'),
+        ('%s#price' % root, 'Прайс'),
         ('%s#contacts' % root, 'Контакты'),
     ]
 
@@ -114,13 +115,20 @@ def header(root):
 <header class="site-header">
   <div class="bar">
     <a class="brand" href="{root}">
-      <span class="b-name">Андрей Булатный</span>
-      <span class="b-sub">студия массажа</span>
+      <img class="b-mark" src="{root}img/logo-mark.png" alt="" width="416" height="512">
+      <span class="b-text">
+        <span class="b-name">Андрей Булатный</span>
+        <span class="b-sub">{BRAND_SUB}</span>
+      </span>
     </a>
     <nav class="nav-desktop" aria-label="Основное меню">
       {links}
       <a class="nav-cta" href="{WA_BOOK}" target="_blank" rel="noopener">Записаться</a>
     </nav>
+    <button class="theme-btn" aria-label="Переключить тему">
+      <span class="ic-moon">{ICONS['moon']}</span>
+      <span class="ic-sun">{ICONS['sun']}</span>
+    </button>
     <button class="burger" aria-label="Открыть меню" aria-expanded="false">
       <svg class="ic-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
       <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg>
@@ -136,6 +144,7 @@ def header(root):
   </nav>
   <div class="mm-contact">
     <a class="btn btn-gold" href="{WA_BOOK}" target="_blank" rel="noopener">{ICONS['chat']} Записаться в WhatsApp</a>
+    <a class="btn btn-dark-outline" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Написать в Telegram</a>
     <a class="btn btn-dark-outline" href="tel:+{PHONE_RAW}">{ICONS['phone']} {PHONE_PRETTY}</a>
   </div>
 </div>'''
@@ -161,6 +170,7 @@ def footer(root):
         <ul>
           <li><a href="tel:+{PHONE_RAW}">{PHONE_PRETTY}</a></li>
           <li><a href="{WA_BOOK}" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="{TG}" target="_blank" rel="noopener">Telegram</a></li>
           <li>Москва, м. Таганская, ул.&nbsp;Б.&nbsp;Каменщики, д.&nbsp;1</li>
           <li>г. Дзержинский, ул.&nbsp;Лесная, д.&nbsp;11</li>
         </ul>
@@ -172,7 +182,7 @@ def footer(root):
     </div>
   </div>
 </footer>
-<script src="{root}js/main.js" defer></script>'''
+<script src="{root}js/main.js?v={_v('js/main.js')}" defer></script>'''
 
 def page(root, title, meta, body, og_img=None, lenis=False):
     lenis_tag = ''
@@ -186,8 +196,10 @@ def page(root, title, meta, body, og_img=None, lenis=False):
 <meta name="description" content="{meta}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{meta}">
+<meta name="theme-color" content="#241812">
 {og}
-<link rel="icon" href="{FAVICON}">
+<link rel="icon" type="image/png" href="{root}img/favicon.png">
+<script>(function(){{try{{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}}catch(e){{}}}})()</script>
 <link rel="stylesheet" href="{root}css/fonts.css?v={_v('css/fonts.css')}">
 <link rel="stylesheet" href="{root}css/base.css?v={_v('css/base.css')}">
 {lenis_tag}
@@ -208,7 +220,7 @@ def read(name):
 
 def render_tokens(html, root):
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
-    html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE)
+    html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
     for k, svg in ICONS.items():
         html = html.replace('{icon:%s}' % k, svg)
     return html
@@ -229,9 +241,12 @@ def guide_page(g, extra_result_html='', article_html=''):
           <p class="lead">{g['lead']}</p>
           <div class="g-buy">
             <p class="g-price-big">{fmt(g['price'])} ₽ <small>единоразово, материал остаётся у вас</small></p>
-            <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить через WhatsApp</a>
+            <div class="g-buy-btns">
+              <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить в WhatsApp</a>
+              <a class="btn btn-dark-outline" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Купить в Telegram</a>
+            </div>
           </div>
-          <p class="btn-note" style="color:rgba(240,231,212,.55)">Напишете — я отвечу лично, пришлю реквизиты и сразу после оплаты отправлю материал вам в мессенджер.</p>
+          <p class="btn-note" style="color:rgba(240,231,212,.55)">Напишете в удобный мессенджер — я отвечу лично, пришлю реквизиты и сразу после оплаты отправлю материал.</p>
         </div>
         <div class="g-hero-photo"><img src="../img/{g['img']}" alt="{g['title']} — Андрей Булатный" width="1200" height="1600"></div>
       </div>
@@ -251,7 +266,8 @@ def guide_page(g, extra_result_html='', article_html=''):
         </div>
         <div class="bb-side">
           <p class="bb-price">{fmt(g['price'])} ₽</p>
-          <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить методичку</a>
+          <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить в WhatsApp</a>
+          <a class="btn btn-dark-outline" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Купить в Telegram</a>
         </div>
       </div>
     </div>
@@ -259,6 +275,7 @@ def guide_page(g, extra_result_html='', article_html=''):
 </main>
 <div class="sticky-buy">
   <p class="sb-price">{fmt(g['price'])} ₽</p>
+  <a class="sb-tg" href="{TG}" target="_blank" rel="noopener" aria-label="Купить в Telegram">{ICONS['tg']}</a>
   <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">Купить</a>
 </div>'''
     return page(root, '%s — %s ₽ · %s' % (g['title'], fmt(g['price']), BRAND), g['meta'], body, og_img=g['img'])

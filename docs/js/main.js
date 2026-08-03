@@ -25,6 +25,17 @@
     });
   }
 
+  /* --- переключатель темы --- */
+  var themeBtn = document.querySelector('.theme-btn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var dark = document.documentElement.dataset.theme === 'dark';
+      if (dark) { delete document.documentElement.dataset.theme; }
+      else { document.documentElement.dataset.theme = 'dark'; }
+      try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) {}
+    });
+  }
+
   /* --- появление блоков --- */
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var targets = document.querySelectorAll('.reveal');
