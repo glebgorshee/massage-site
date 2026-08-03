@@ -117,8 +117,8 @@ def header(root):
     <a class="brand" href="{root}">
       <img class="b-mark" src="{root}img/logo-mark.png" alt="" width="416" height="512">
       <span class="b-text">
-        <span class="b-name">Андрей Булатный</span>
-        <span class="b-sub">{BRAND_SUB}</span>
+        <span class="b-name">Клуб восстановления</span>
+        <span class="b-sub">Андрея Булатного</span>
       </span>
     </a>
     <nav class="nav-desktop" aria-label="Основное меню">

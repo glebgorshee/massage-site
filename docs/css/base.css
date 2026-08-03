@@ -20,6 +20,10 @@
   --line:      rgba(166, 129, 63, .28);
   --line-dark: rgba(232, 205, 154, .22);
   --shadow:    0 10px 30px -12px rgba(43, 33, 26, .25);
+  --header-bg: rgba(36, 24, 18, .92);
+  --hero-glow: #3A2A1E;
+  --dark-warm: #33241A;
+  --sticky-bg: rgba(27, 18, 13, .96);
   --radius:    14px;
   --wrap:      1120px;
   --header-h:  64px;
@@ -97,7 +101,7 @@ hr.sep {
 
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(36, 24, 18, .92);
+  background: var(--header-bg);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line-dark);
 }
@@ -169,7 +173,7 @@ html[data-theme="dark"] .theme-btn .ic-moon { display: none; }
 .mobile-menu {
   display: none;
   position: fixed; inset: var(--header-h) 0 0 0; z-index: 99;
-  background: linear-gradient(180deg, #241812 0%, #1B120D 100%);
+  background: linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 100%);
   padding: 34px 24px 44px;
   overflow-y: auto;
 }
@@ -236,7 +240,7 @@ body.menu-open { overflow: hidden; }
 
 .hero {
   position: relative; overflow: hidden;
-  background: radial-gradient(120% 120% at 85% 10%, #3A2A1E 0%, var(--dark) 55%, var(--dark-2) 100%);
+  background: radial-gradient(120% 120% at 85% 10%, var(--hero-glow) 0%, var(--dark) 55%, var(--dark-2) 100%);
   color: #F0E7D4;
 }
 .hero .wrap {
@@ -355,7 +359,7 @@ body.menu-open { overflow: hidden; }
 .guide-card.flagship {
   grid-column: 1 / -1;
   flex-direction: row;
-  background: linear-gradient(120deg, var(--dark) 0%, #33241A 100%);
+  background: linear-gradient(120deg, var(--dark) 0%, var(--dark-warm) 100%);
   border-color: rgba(198, 161, 91, .5);
 }
 .guide-card.flagship .g-img { flex: 0 0 42%; aspect-ratio: auto; }
@@ -472,7 +476,7 @@ body.menu-open { overflow: hidden; }
 /* ---------- страница методички ---------- */
 
 .g-hero {
-  background: radial-gradient(110% 130% at 80% 0%, #3A2A1E 0%, var(--dark) 60%, var(--dark-2) 100%);
+  background: radial-gradient(110% 130% at 80% 0%, var(--hero-glow) 0%, var(--dark) 60%, var(--dark-2) 100%);
   color: #F0E7D4;
   padding: 58px 0 64px;
 }
@@ -532,7 +536,7 @@ body.menu-open { overflow: hidden; }
 
 /* CTA-блок покупки внизу страницы */
 .buy-block {
-  background: linear-gradient(120deg, var(--dark) 0%, #33241A 100%);
+  background: linear-gradient(120deg, var(--dark) 0%, var(--dark-warm) 100%);
   border: 1px solid rgba(198, 161, 91, .5);
   border-radius: 18px;
   padding: 40px 42px;
@@ -554,7 +558,7 @@ body.menu-open { overflow: hidden; }
 .sticky-buy {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
   display: none;
-  background: rgba(27, 18, 13, .96);
+  background: var(--sticky-bg);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid var(--line-dark);
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -607,15 +611,24 @@ html.js .reveal.in {
 
 /* ---------- тёмная тема ---------- */
 
+/* Чёрно-серая гамма с золотом — как фирменный рендер логотипа */
 html[data-theme="dark"] {
-  --bg:       #1C130E;
-  --bg-soft:  #211710;
-  --card:     #2B1F17;
-  --ink:      #EFE6D3;
-  --ink-soft: #D9CCB6;
-  --muted:    #A8977F;
-  --line:     rgba(226, 193, 133, .22);
-  --shadow:   0 10px 30px -12px rgba(0, 0, 0, .55);
+  --bg:        #141312;
+  --bg-soft:   #181716;
+  --card:      #1E1C1A;
+  --ink:       #EDE6D6;
+  --ink-soft:  #CFC6B4;
+  --muted:     #9B9186;
+  --dark:      #161514;
+  --dark-2:    #0B0A0A;
+  --dark-card: #201E1C;
+  --dark-warm: #26231F;
+  --hero-glow: #3B3730;
+  --header-bg: rgba(14, 13, 13, .93);
+  --sticky-bg: rgba(11, 10, 10, .96);
+  --line:      rgba(212, 186, 137, .22);
+  --line-dark: rgba(226, 205, 160, .18);
+  --shadow:    0 10px 30px -12px rgba(0, 0, 0, .6);
 }
 html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
 html[data-theme="dark"] a { color: var(--gold-hi); }
@@ -626,7 +639,6 @@ html[data-theme="dark"] .guide-card h3 a { color: var(--ink); }
 html[data-theme="dark"] .g-more { color: var(--ink-soft); }
 html[data-theme="dark"] .guide-card .g-price,
 html[data-theme="dark"] .price-row .p-time { color: var(--gold-hi); }
-html[data-theme="dark"] .section-dark { background: linear-gradient(180deg, #241812 0%, #1B120D 100%); }
-html[data-theme="dark"] .hero { background: radial-gradient(120% 120% at 85% 10%, #3A2A1E 0%, #241812 55%, #1B120D 100%); }
+html[data-theme="dark"] .eyebrow { color: var(--gold); }
 
 .nav-desktop a { white-space: nowrap; }
