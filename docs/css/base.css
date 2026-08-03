@@ -253,7 +253,13 @@ body.menu-open { overflow: hidden; }
 .hero h1 { color: #F5EDDC; margin: 18px 0 20px; }
 .hero h1 .gold-text { display: block; }
 .hero .lead { font-size: 1.06rem; color: rgba(240, 231, 212, .82); max-width: 46ch; }
-.hero .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; align-items: center; }
+.hero .hero-cta {
+  display: inline-flex; flex-direction: column; align-items: stretch;
+  gap: 14px; margin-top: 32px;
+}
+.hero-cta-row { display: flex; gap: 14px; }
+.hero-cta-row .btn { flex: 1; padding-left: 20px; padding-right: 20px; }
+@media (max-width: 420px) { .hero-cta-row { flex-direction: column; } }
 .hero-trust {
   grid-column: 1 / -1;
   display: grid; grid-template-columns: repeat(2, 1fr);
