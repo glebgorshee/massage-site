@@ -22,6 +22,12 @@ TG = 'https://t.me/MassageTaganka'
 INN = '505601883579'
 FIO = 'Шмаров Андрей Владимирович'
 
+# Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
+# Как появятся: вписать сюда slug → ссылка, и весь сайт переключится на приём оплаты.
+PAY = {
+    # 'pitanie': 'https://auth.robokassa.ru/Merchant/Index/...',
+}
+
 def wa(text):
     return 'https://wa.me/%s?text=%s' % (PHONE_RAW, urllib.parse.quote(text))
 
@@ -92,6 +98,8 @@ ICONS = {
  'sun':     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
  'moon':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
  'tg':      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 21.5 11 14l-7.5-3.5L21.5 3.5z"/><path d="M11 14 21.5 3.5"/></svg>',
+ 'card':    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+ 'download':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>',
 }
 
 # favicon: docs/img/favicon.png (знак на шоколадном фоне)
@@ -226,6 +234,53 @@ def render_tokens(html, root):
     return html
 
 # ---------------------------------------------------------------- сборка
+def buy_buttons(g, dark=True):
+    """Одна кнопка оплаты, если подключена касса; иначе — мессенджеры."""
+    pay = PAY.get(g['slug'])
+    wa_url = wa('Здравствуйте, Андрей! Хочу приобрести методичку «%s» (%s ₽).' % (g['title'], fmt(g['price'])))
+    alt = 'btn-dark-outline' if dark else 'btn-outline'
+    if pay:
+        return f'''<div class="g-buy-btns">
+              <a class="btn btn-gold" href="{pay}" target="_blank" rel="noopener">{ICONS['card']} Оплатить {fmt(g['price'])} ₽</a>
+              <a class="btn {alt}" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Задать вопрос</a>
+            </div>'''
+    return f'''<div class="g-buy-btns">
+              <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить в WhatsApp</a>
+              <a class="btn {alt}" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Купить в Telegram</a>
+            </div>'''
+
+def buy_note(g):
+    if PAY.get(g['slug']):
+        return 'Оплата картой или через СБП. Сразу после оплаты файл придёт вам на почту, чек — автоматически.'
+    return 'Напишете в удобный мессенджер — я отвечу лично, пришлю реквизиты и сразу после оплаты отправлю материал.'
+
+def also_read(g):
+    """Перелинковка: три соседние темы под статьёй."""
+    others = [x for x in GUIDES if x['slug'] != g['slug']][:3]
+    cards = ''.join(f'''
+      <article class="guide-card reveal">
+        <div class="g-img"><span class="g-step">Шаг {o['step']}</span><img src="../img/{o['img']}" alt="{o['title']}" loading="lazy"></div>
+        <div class="g-body">
+          <h3><a href="../{o['slug']}/">{o['title']}</a></h3>
+          <p class="g-desc">{o['card']}</p>
+          <div class="g-foot"><span class="g-price">{fmt(o['price'])} ₽</span><span class="g-more">Читать {ICONS['arrow']}</span></div>
+        </div>
+      </article>''' for o in others)
+    return f'''
+<section class="section section-soft">
+  <div class="wrap">
+    <div class="s-head reveal">
+      <p class="eyebrow">Другие темы</p>
+      <h2>Читайте дальше</h2>
+      <p class="s-sub">Все методички собраны в одну систему — начните с той темы, которая ближе.</p>
+    </div>
+    <div class="guides-grid">{cards}</div>
+    <div style="margin-top:26px" class="reveal">
+      <a class="btn btn-outline" href="../kurs/">Смотреть полный курс {ICONS['arrow']}</a>
+    </div>
+  </div>
+</section>'''
+
 def guide_page(g, extra_result_html='', article_html=''):
     root = '../'
     wa_url = wa('Здравствуйте, Андрей! Хочу приобрести методичку «%s» (%s ₽).' % (g['title'], fmt(g['price'])))
@@ -241,12 +296,9 @@ def guide_page(g, extra_result_html='', article_html=''):
           <p class="lead">{g['lead']}</p>
           <div class="g-buy">
             <p class="g-price-big">{fmt(g['price'])} ₽ <small>единоразово, материал остаётся у вас</small></p>
-            <div class="g-buy-btns">
-              <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить в WhatsApp</a>
-              <a class="btn btn-dark-outline" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Купить в Telegram</a>
-            </div>
+            {buy_buttons(g)}
           </div>
-          <p class="btn-note" style="color:rgba(240,231,212,.55)">Напишете в удобный мессенджер — я отвечу лично, пришлю реквизиты и сразу после оплаты отправлю материал.</p>
+          <p class="btn-note" style="color:rgba(240,231,212,.55)">{buy_note(g)}</p>
         </div>
         <div class="g-hero-photo"><img src="../img/{g['img']}" alt="{g['title']} — Андрей Булатный" width="1200" height="1600"></div>
       </div>
@@ -266,17 +318,17 @@ def guide_page(g, extra_result_html='', article_html=''):
         </div>
         <div class="bb-side">
           <p class="bb-price">{fmt(g['price'])} ₽</p>
-          <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">{ICONS['chat']} Купить в WhatsApp</a>
-          <a class="btn btn-dark-outline" href="{TG}" target="_blank" rel="noopener">{ICONS['tg']} Купить в Telegram</a>
+          {buy_buttons(g)}
         </div>
       </div>
     </div>
   </section>
+  {also_read(g)}
 </main>
 <div class="sticky-buy">
   <p class="sb-price">{fmt(g['price'])} ₽</p>
-  <a class="sb-tg" href="{TG}" target="_blank" rel="noopener" aria-label="Купить в Telegram">{ICONS['tg']}</a>
-  <a class="btn btn-gold" href="{wa_url}" target="_blank" rel="noopener">Купить</a>
+  <a class="sb-tg" href="{TG}" target="_blank" rel="noopener" aria-label="Написать в Telegram">{ICONS['tg']}</a>
+  <a class="btn btn-gold" href="{PAY.get(g['slug']) or wa_url}" target="_blank" rel="noopener">Купить</a>
 </div>'''
     return page(root, '%s — %s ₽ · %s' % (g['title'], fmt(g['price']), BRAND), g['meta'], body, og_img=g['img'])
 
@@ -303,6 +355,11 @@ def build():
     pages['online/index.html'] = page('../',
         'Онлайн-приём — 60 минут, %s ₽ · %s' % (fmt(ONLINE['price']), BRAND), ONLINE['meta'],
         render_tokens(read('online.html'), '../'), og_img=ONLINE['img'])
+
+    # страница после оплаты (Success URL кассы)
+    pages['spasibo/index.html'] = page('../', 'Спасибо за покупку · %s' % BRAND,
+        'Оплата прошла успешно. Материал отправлен на вашу почту.',
+        render_tokens(read('spasibo.html'), '../'), lenis=False)
 
     # юридические
     pages['oferta/index.html'] = page('../', 'Публичная оферта · %s' % BRAND,
