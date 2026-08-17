@@ -19,6 +19,7 @@ BRAND = 'Андрей Булатный'
 BRAND_FULL = 'Клуб восстановления Андрея Булатного'
 BRAND_SUB = 'клуб восстановления'
 TG = 'https://t.me/MassageTaganka'
+SITE = 'https://bulatny.ru'          # основной адрес, для canonical и Success URL кассы
 INN = '505601883579'
 FIO = 'Шмаров Андрей Владимирович'
 
@@ -192,9 +193,10 @@ def footer(root):
 </footer>
 <script src="{root}js/main.js?v={_v('js/main.js')}" defer></script>'''
 
-def page(root, title, meta, body, og_img=None, lenis=False):
+def page(root, title, meta, body, og_img=None, lenis=False, canon=''):
     lenis_tag = ''
-    og = f'<meta property="og:image" content="{root}img/{og_img}">' if og_img else ''
+    og = f'<meta property="og:image" content="{SITE}/{canon}img/{og_img}">' if og_img else ''
+    canonical = f'<link rel="canonical" href="{SITE}/{canon}">'
     return f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -205,6 +207,8 @@ def page(root, title, meta, body, og_img=None, lenis=False):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{meta}">
 <meta name="theme-color" content="#241812">
+{canonical}
+<meta property="og:url" content="{SITE}/{canon}">
 {og}
 <link rel="icon" type="image/png" href="{root}img/favicon.png">
 <script>(function(){{try{{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}}catch(e){{}}}})()</script>
@@ -330,7 +334,8 @@ def guide_page(g, extra_result_html='', article_html=''):
   <a class="sb-tg" href="{TG}" target="_blank" rel="noopener" aria-label="Написать в Telegram">{ICONS['tg']}</a>
   <a class="btn btn-gold" href="{PAY.get(g['slug']) or wa_url}" target="_blank" rel="noopener">Купить</a>
 </div>'''
-    return page(root, '%s — %s ₽ · %s' % (g['title'], fmt(g['price']), BRAND), g['meta'], body, og_img=g['img'])
+    return page(root, '%s — %s ₽ · %s' % (g['title'], fmt(g['price']), BRAND), g['meta'], body,
+                og_img=g['img'], canon='%s/' % g['slug'])
 
 def build():
     pages = {}
@@ -338,7 +343,7 @@ def build():
     # главная
     pages['index.html'] = page('', '%s — программы восстановления, массаж и методички' % BRAND_FULL,
         'Восстановительный массаж, висцеральная терапия, гирудотерапия и авторские методички по восстановлению ЖКТ. Москва, м. Таганская. Онлайн-приёмы.',
-        render_tokens(read('index.html'), ''), og_img='hero.jpg')
+        render_tokens(read('index.html'), ''), og_img='hero.jpg', canon='')
 
     # методички
     for g in GUIDES:
@@ -351,21 +356,21 @@ def build():
     # курс и онлайн — свои фрагменты целиком
     pages['kurs/index.html'] = page('../',
         '%s — %s ₽ · %s' % (KURS['title'], fmt(KURS['price']), BRAND), KURS['meta'],
-        render_tokens(read('kurs.html'), '../'), og_img=KURS['img'])
+        render_tokens(read('kurs.html'), '../'), og_img=KURS['img'], canon='kurs/')
     pages['online/index.html'] = page('../',
         'Онлайн-приём — 60 минут, %s ₽ · %s' % (fmt(ONLINE['price']), BRAND), ONLINE['meta'],
-        render_tokens(read('online.html'), '../'), og_img=ONLINE['img'])
+        render_tokens(read('online.html'), '../'), og_img=ONLINE['img'], canon='online/')
 
     # страница после оплаты (Success URL кассы)
     pages['spasibo/index.html'] = page('../', 'Спасибо за покупку · %s' % BRAND,
         'Оплата прошла успешно. Материал отправлен на вашу почту.',
-        render_tokens(read('spasibo.html'), '../'), lenis=False)
+        render_tokens(read('spasibo.html'), '../'), lenis=False, canon='spasibo/')
 
     # юридические
     pages['oferta/index.html'] = page('../', 'Публичная оферта · %s' % BRAND,
-        'Условия приобретения информационных материалов.', render_tokens(read('oferta.html'), '../'), lenis=False)
+        'Условия приобретения информационных материалов.', render_tokens(read('oferta.html'), '../'), lenis=False, canon='oferta/')
     pages['privacy/index.html'] = page('../', 'Политика обработки персональных данных · %s' % BRAND,
-        'Как обрабатываются персональные данные покупателей.', render_tokens(read('privacy.html'), '../'), lenis=False)
+        'Как обрабатываются персональные данные покупателей.', render_tokens(read('privacy.html'), '../'), lenis=False, canon='privacy/')
 
     for rel, html in pages.items():
         path = os.path.join(OUT, rel)
