@@ -2,3 +2,5 @@ assets-src/
 .DS_Store
 paid/dist/
 paid/tmp/
+docs/files/
+paid/video/

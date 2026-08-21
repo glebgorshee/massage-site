@@ -24,6 +24,19 @@ INN = '505601883579'
 OGRNIP = '323508100135643'
 FIO = 'Шмаров Андрей Владимирович'
 
+# Файлы выдачи после оплаты: slug → (имя файла на сервере, подпись на кнопке)
+FILES = {
+    'pitanie':  ('pitanie-bbd950b19a.pdf',  'Рацион питания.pdf'),
+    'limfa':    ('limfa-1ccde28a31.pdf',    'Лимфодренажный протокол.pdf'),
+    'tubazh':   ('tubazh-453dce99c7.pdf',   'Тюбажная система очищения.pdf'),
+    'parazity': ('parazity-273857cc4f.pdf', 'Антипаразитарная чистка.pdf'),
+    'kurs':     ('kurs-4a807ab6af.pdf',     'Курс по восстановлению ЖКТ.pdf'),
+}
+# Видео-уроки (самомассаж): список файлов на сервере
+VIDEO = {
+    'zhivot': ['zhivot-d7c9b54e7d-1.mp4', 'zhivot-d7c9b54e7d-2.mp4', 'zhivot-d7c9b54e7d-3.mp4'],
+}
+
 # Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
 # Как появятся: вписать сюда slug → ссылка, и весь сайт переключится на приём оплаты.
 PAY = {
@@ -344,6 +357,67 @@ def guide_page(g, extra_result_html='', article_html=''):
     return page(root, '%s — %s ₽ · %s' % (g['title'], fmt(g['price']), BRAND), g['meta'], body,
                 og_img=g['img'], canon='%s/' % g['slug'])
 
+
+def thanks_page(item):
+    """Страница выдачи после оплаты — своя на каждый товар."""
+    slug, title, price = item['slug'], item['title'], fmt(item['price'])
+    root = '../../'
+    if slug in VIDEO:
+        vids = ''.join(f'''
+            <a class="btn btn-gold" href="{root}files/{v}" download style="margin:0 0 12px">
+              {ICONS['download']} Скачать урок {i}
+            </a>''' for i, v in enumerate(VIDEO[slug], 1))
+        block = f'''<div class="g-buy-btns" style="flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto">{vids}</div>
+          <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">Три видеоурока. Можно смотреть онлайн или сохранить на телефон.</p>'''
+    else:
+        fname, human = FILES[slug]
+        block = f'''<div class="g-buy-btns" style="justify-content:center">
+            <a class="btn btn-gold" href="{root}files/{fname}" download="{human}">{ICONS['download']} Скачать методичку</a>
+          </div>
+          <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">Файл PDF — откроется на телефоне и на компьютере. Сохраните его себе.</p>'''
+
+    body = f'''
+<main>
+  <section class="g-hero">
+    <div class="wrap">
+      <div style="max-width:640px;margin:0 auto;text-align:center">
+        <p class="eyebrow" style="justify-content:center">Оплата прошла</p>
+        <h1 style="margin:16px 0 14px">Спасибо! Материал ваш</h1>
+        <p class="lead" style="margin:0 auto 26px">«{title}» — {price} ₽. Забирайте файл, он остаётся у вас навсегда.</p>
+        {block}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="article" style="margin:0 auto">
+        <h2>С чего начать</h2>
+        <ol>
+          <li><b>Прочитайте целиком</b>, не начиная действовать — сначала общая картина, потом практика.</li>
+          <li><b>Подготовьте всё необходимое</b> по списку из материала.</li>
+          <li><b>Выберите дату старта</b> и освободите этот день от лишних дел.</li>
+          <li><b>Задавайте вопросы</b> — я на связи и помогу разобраться.</li>
+        </ol>
+        <div class="note">Файл не скачался или открылся с ошибкой? Напишите мне в <a href="{TG}">Telegram</a> или <a href="{WA_BOOK}">WhatsApp</a> — отправлю лично.</div>
+      </div>
+      <div class="buy-block reveal">
+        <div>
+          <h2>Нужен разбор вашего случая?</h2>
+          <p>60 минут онлайн: разберём состояние, найдём первопричину и составим персональный план.</p>
+        </div>
+        <div class="bb-side">
+          <p class="bb-price">5 000 ₽</p>
+          <a class="btn btn-gold" href="{root}online/">{ICONS['arrow']} Об онлайн-приёме</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>'''
+    return page(root, 'Спасибо за покупку — %s · %s' % (title, BRAND),
+                'Материал «%s» готов к скачиванию.' % title, body,
+                lenis=False, canon='spasibo/%s/' % slug)
+
 def build():
     pages = {}
 
@@ -367,6 +441,10 @@ def build():
     pages['online/index.html'] = page('../',
         'Онлайн-приём — 60 минут, %s ₽ · %s' % (fmt(ONLINE['price']), BRAND), ONLINE['meta'],
         render_tokens(read('online.html'), '../'), og_img=ONLINE['img'], canon='online/')
+
+    # персональные страницы выдачи: /spasibo/<товар>/
+    for g in GUIDES + [KURS]:
+        pages['spasibo/%s/index.html' % g['slug']] = thanks_page(g)
 
     # страница после оплаты (Success URL кассы)
     pages['spasibo/index.html'] = page('../', 'Спасибо за покупку · %s' % BRAND,
