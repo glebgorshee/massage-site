@@ -26,7 +26,12 @@ FIO = 'Шмаров Андрей Владимирович'
 # Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
 # Как появятся: вписать сюда slug → ссылка, и весь сайт переключится на приём оплаты.
 PAY = {
-    # 'pitanie': 'https://auth.robokassa.ru/Merchant/Index/...',
+    'pitanie':  'https://auth.robokassa.ru/merchant/Invoice/2J9VSNT9CE6POkJxStvqiw',   # 1 490 ₽
+    'zhivot':   'https://auth.robokassa.ru/merchant/Invoice/ArGfVT6YP0KqyR8F99BW9g',   # 1 990 ₽
+    'limfa':    'https://auth.robokassa.ru/merchant/Invoice/Gj_YCTnIeU-IJ3rEtyz5Fw',   # 990 ₽
+    'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/9Tjr0hDC9kaYpHR1nNzioA',   # 2 490 ₽
+    'parazity': 'https://auth.robokassa.ru/merchant/Invoice/1rl1QT-KTUqJh5dhqa4dEw',   # 2 990 ₽
+    'kurs':     'https://auth.robokassa.ru/merchant/Invoice/dLvfBpnLbE2y-nJbyE6qXA',   # 14 990 ₽
 }
 
 def wa(text):
@@ -186,7 +191,7 @@ def footer(root):
       </div>
     </div>
     <div class="footer-legal">
-      <p>Самозанятый {FIO} · ИНН {INN} · <a href="{root}oferta/">Публичная оферта</a> · <a href="{root}privacy/">Политика обработки персональных данных</a></p>
+      <p>ИП {FIO} · ИНН {INN} · <a href="{root}oferta/">Публичная оферта</a> · <a href="{root}privacy/">Политика обработки персональных данных</a></p>
       <p>Информация на сайте носит ознакомительный характер, не является медицинской услугой, публичной офертой о медицинской помощи или заменой консультации врача. Имеются противопоказания — при хронических заболеваниях проконсультируйтесь со специалистом.</p>
     </div>
   </div>
@@ -233,6 +238,7 @@ def read(name):
 def render_tokens(html, root):
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
     html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
+    html = html.replace('{PAY_KURS}', PAY.get('kurs', WA_BOOK))
     for k, svg in ICONS.items():
         html = html.replace('{icon:%s}' % k, svg)
     return html

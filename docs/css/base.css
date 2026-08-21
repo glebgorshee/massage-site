@@ -351,7 +351,8 @@ body.menu-open { overflow: hidden; }
   border-top: 1px solid var(--line);
 }
 .guide-card .g-price {
-  font-family: 'Cormorant', serif; font-size: 1.5rem; font-weight: 700; color: var(--gold-deep);
+  font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--gold-deep);
+  letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
 .guide-card .g-more {
@@ -436,7 +437,7 @@ body.menu-open { overflow: hidden; }
   padding: 5px 12px; border-radius: 999px; white-space: nowrap;
 }
 .price-row .p-cost {
-  font-family: 'Cormorant', serif; font-size: 1.45rem; font-weight: 700;
+  font-family: 'Montserrat', sans-serif; font-size: 1.12rem; font-weight: 700; letter-spacing: -.01em;
   white-space: nowrap; font-variant-numeric: tabular-nums;
 }
 .price-row.p-gift { border-style: dashed; background: transparent; grid-template-columns: auto 1fr; }
@@ -501,7 +502,8 @@ body.menu-open { overflow: hidden; }
 .g-buy { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 30px; }
 .g-buy-btns { display: flex; flex-wrap: wrap; gap: 12px; }
 .g-buy .g-price-big {
-  font-family: 'Cormorant', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold-hi);
+  font-family: 'Montserrat', sans-serif; font-size: 1.7rem; font-weight: 700; color: var(--gold-hi);
+  letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
 }
 .g-buy .g-price-big small { font-size: 1rem; font-weight: 500; color: rgba(240,231,212,.6); display: block; line-height: 1; margin-top: 2px; font-family: 'Montserrat', sans-serif; }
@@ -554,7 +556,8 @@ body.menu-open { overflow: hidden; }
 .buy-block h2 { color: #F5EDDC; font-size: clamp(1.4rem, 3.4vw, 1.9rem); margin-bottom: 10px; }
 .buy-block p { font-size: .92rem; color: rgba(240, 231, 212, .75); }
 .buy-block .bb-price {
-  font-family: 'Cormorant', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold-hi);
+  font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 700; color: var(--gold-hi);
+  letter-spacing: -.02em;
   line-height: 1; font-variant-numeric: tabular-nums;
 }
 .buy-block .bb-side { display: grid; gap: 14px; justify-items: start; }
@@ -570,7 +573,7 @@ body.menu-open { overflow: hidden; }
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   align-items: center; gap: 14px; justify-content: space-between;
 }
-.sticky-buy .sb-price { font-family: 'Cormorant', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-hi); white-space: nowrap; margin-right: auto; }
+.sticky-buy .sb-price { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--gold-hi); white-space: nowrap; margin-right: auto; }
 .sticky-buy .btn { padding: 12px 22px; min-height: 46px; font-size: .88rem; }
 .sticky-buy .sb-tg {
   width: 46px; height: 46px; flex: none;
