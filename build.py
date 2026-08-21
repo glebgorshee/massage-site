@@ -199,8 +199,8 @@ def footer(root):
           <li><a href="tel:+{PHONE_RAW}">{PHONE_PRETTY}</a></li>
           <li><a href="{WA_BOOK}" target="_blank" rel="noopener">WhatsApp</a></li>
           <li><a href="{TG}" target="_blank" rel="noopener">Telegram</a></li>
-          <li>Москва, м. Таганская, ул.&nbsp;Б.&nbsp;Каменщики, д.&nbsp;1</li>
-          <li>г. Дзержинский, ул.&nbsp;Лесная, д.&nbsp;11</li>
+          <li>Москва, м.&nbsp;Таганская,<br>ул.&nbsp;Б.&nbsp;Каменщики,&nbsp;д.&nbsp;1</li>
+          <li>г.&nbsp;Дзержинский,<br>ул.&nbsp;Лесная,&nbsp;д.&nbsp;11</li>
         </ul>
       </div>
     </div>
