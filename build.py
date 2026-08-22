@@ -40,14 +40,15 @@ VIDEO = {
 # Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
 # Как появятся: вписать сюда slug → ссылка, и весь сайт переключится на приём оплаты.
 PAY = {
-    # ВРЕМЕННО ОТКЛЮЧЕНО: ссылки вида /merchant/Invoice/ — одноразовые счета,
-    # они протухают (ошибка 51). Нужны постоянные ссылки платёжного виджета.
-    # 'pitanie':  'https://auth.robokassa.ru/merchant/Invoice/2J9VSNT9CE6POkJxStvqiw',
-    # 'zhivot':   'https://auth.robokassa.ru/merchant/Invoice/ArGfVT6YP0KqyR8F99BW9g',
-    # 'limfa':    'https://auth.robokassa.ru/merchant/Invoice/Gj_YCTnIeU-IJ3rEtyz5Fw',
-    # 'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/9Tjr0hDC9kaYpHR1nNzioA',
-    # 'parazity': 'https://auth.robokassa.ru/merchant/Invoice/1rl1QT-KTUqJh5dhqa4dEw',
-    # 'kurs':     'https://auth.robokassa.ru/merchant/Invoice/dLvfBpnLbE2y-nJbyE6qXA',
+    # Проверено 21.08.2026 — все открываются, суммы совпадают.
+    # ВНИМАНИЕ: ссылка меняется при любом сохранении виджета в Робокассе.
+    # После правок в кабинете нужно взять новые ссылки и обновить здесь.
+    'pitanie':  'https://auth.robokassa.ru/merchant/Invoice/DVQtw5iSyU6ljz0gCXb44Q',   # 1 490 ₽
+    'zhivot':   'https://auth.robokassa.ru/merchant/Invoice/r9kIGoekzUuaJsz3BYOS4w',   # 1 990 ₽
+    'limfa':    'https://auth.robokassa.ru/merchant/Invoice/4kdYuGB9LE-wvMjgvOXggw',   # 990 ₽
+    'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/cw9UuLQa-k625fWDwOz2Fg',   # 2 490 ₽
+    'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
+    'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
 }
 
 def wa(text):
