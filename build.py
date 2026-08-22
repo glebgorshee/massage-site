@@ -40,12 +40,14 @@ VIDEO = {
 # Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
 # Как появятся: вписать сюда slug → ссылка, и весь сайт переключится на приём оплаты.
 PAY = {
-    'pitanie':  'https://auth.robokassa.ru/merchant/Invoice/2J9VSNT9CE6POkJxStvqiw',   # 1 490 ₽
-    'zhivot':   'https://auth.robokassa.ru/merchant/Invoice/ArGfVT6YP0KqyR8F99BW9g',   # 1 990 ₽
-    'limfa':    'https://auth.robokassa.ru/merchant/Invoice/Gj_YCTnIeU-IJ3rEtyz5Fw',   # 990 ₽
-    'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/9Tjr0hDC9kaYpHR1nNzioA',   # 2 490 ₽
-    'parazity': 'https://auth.robokassa.ru/merchant/Invoice/1rl1QT-KTUqJh5dhqa4dEw',   # 2 990 ₽
-    'kurs':     'https://auth.robokassa.ru/merchant/Invoice/dLvfBpnLbE2y-nJbyE6qXA',   # 14 990 ₽
+    # ВРЕМЕННО ОТКЛЮЧЕНО: ссылки вида /merchant/Invoice/ — одноразовые счета,
+    # они протухают (ошибка 51). Нужны постоянные ссылки платёжного виджета.
+    # 'pitanie':  'https://auth.robokassa.ru/merchant/Invoice/2J9VSNT9CE6POkJxStvqiw',
+    # 'zhivot':   'https://auth.robokassa.ru/merchant/Invoice/ArGfVT6YP0KqyR8F99BW9g',
+    # 'limfa':    'https://auth.robokassa.ru/merchant/Invoice/Gj_YCTnIeU-IJ3rEtyz5Fw',
+    # 'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/9Tjr0hDC9kaYpHR1nNzioA',
+    # 'parazity': 'https://auth.robokassa.ru/merchant/Invoice/1rl1QT-KTUqJh5dhqa4dEw',
+    # 'kurs':     'https://auth.robokassa.ru/merchant/Invoice/dLvfBpnLbE2y-nJbyE6qXA',
 }
 
 def wa(text):
@@ -252,7 +254,10 @@ def read(name):
 def render_tokens(html, root):
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
     html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
-    html = html.replace('{PAY_KURS}', PAY.get('kurs', WA_BOOK))
+    _pk = PAY.get('kurs')
+    html = html.replace('{PAY_KURS}', _pk or wa('Здравствуйте, Андрей! Хочу приобрести «Курс по восстановлению ЖКТ» (14 990 ₽).'))
+    html = html.replace('{PAY_KURS_LABEL}', 'Оплатить 14 990 ₽' if _pk else 'Купить в WhatsApp')
+    html = html.replace('{PAY_KURS_LABEL2}', 'Оплатить курс' if _pk else 'Написать в WhatsApp')
     for k, svg in ICONS.items():
         html = html.replace('{icon:%s}' % k, svg)
     return html
