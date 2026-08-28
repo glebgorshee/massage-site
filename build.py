@@ -3,7 +3,7 @@
 """Генератор сайта «Студия массажа Андрея Булатного».
 Контент страниц: content/*.html  →  сборка: python3 build.py  →  site/"""
 
-import os, urllib.parse, hashlib
+import os, re, urllib.parse, hashlib
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, 'docs')
@@ -214,6 +214,17 @@ def footer(root):
   </div>
 </footer>
 <script src="{root}js/main.js?v={_v('js/main.js')}" defer></script>'''
+
+def version_images(html):
+    """К каждой картинке дописываем хеш файла: браузер сразу видит замену, а не старую из кэша."""
+    def sub(m):
+        path, name = m.group(1), m.group(2)
+        full = os.path.join(OUT, 'img', name)
+        if not os.path.exists(full):
+            return m.group(0)
+        h = hashlib.md5(open(full, 'rb').read()).hexdigest()[:8]
+        return 'src="%s?v=%s"' % (path, h)
+    return re.sub(r'src="((?:\.\./)*img/([\w.-]+))"', sub, html)
 
 def page(root, title, meta, body, og_img=None, lenis=False, canon=''):
     lenis_tag = ''
@@ -467,7 +478,7 @@ def build():
         path = os.path.join(OUT, rel)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'w', encoding='utf-8') as f:
-            f.write(html)
+            f.write(version_images(html))
         print('built', rel)
 
 if __name__ == '__main__':
