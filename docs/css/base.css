@@ -278,8 +278,8 @@ body.menu-open { overflow: hidden; }
 
 .hero-photo { position: relative; }
 .hero-photo img {
-  width: 100%; height: auto; aspect-ratio: 3 / 4;
-  max-height: min(78svh, 760px);
+  width: 100%; height: auto; aspect-ratio: 4 / 3;
+  max-height: min(70svh, 620px);
   object-fit: cover; object-position: center;
   border-radius: 18px;
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .55);
