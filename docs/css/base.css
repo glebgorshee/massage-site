@@ -31,7 +31,8 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
+/* clip, а не hidden: не создаёт скролл-контейнер и не ломает sticky-шапку */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -245,6 +246,7 @@ body.menu-open { overflow: hidden; }
 }
 .hero .wrap {
   position: relative; z-index: 2; max-width: 1260px;
+  min-width: 0;
   display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px;
   align-items: center;
   padding-top: 72px; padding-bottom: 84px;
@@ -260,14 +262,19 @@ body.menu-open { overflow: hidden; }
 .hero-cta-row { display: flex; gap: 14px; }
 .hero-cta-row .btn { flex: 1; padding-left: 20px; padding-right: 20px; }
 @media (max-width: 420px) { .hero-cta-row { flex-direction: column; } }
+.hero .wrap > * { min-width: 0; }
+
 .hero-trust {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; min-width: 0;
   display: grid; grid-template-columns: repeat(2, 1fr);
   align-items: baseline;
   gap: 22px 32px; margin-top: 14px;
   padding-top: 26px; border-top: 1px solid var(--line-dark);
 }
 @media (min-width: 860px) { .hero-trust { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 520px) { .hero-trust { grid-template-columns: 1fr; gap: 14px; } }
+.hero-trust .t { min-width: 0; flex-wrap: wrap; }
+.hero-trust span { min-width: 0; overflow-wrap: anywhere; }
 .hero-trust .t { display: flex; align-items: baseline; gap: 9px; }
 .hero-trust b { flex: none; }
 .hero-trust span { line-height: 1.35; }
@@ -446,6 +453,12 @@ body.menu-open { overflow: hidden; }
 @media (max-width: 620px) {
   .price-row { grid-template-columns: 1fr auto; }
   .price-row .p-time { display: none; }
+}
+/* узкие телефоны (320–400): даём названию переноситься, поджимаем поля */
+.price-row .p-name { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 400px) {
+  .price-row { padding: 15px 16px; gap: 6px 14px; }
+  .price-row .p-cost { font-size: 1.04rem; }
 }
 
 /* ---------- отзывы ---------- */
@@ -651,3 +664,36 @@ html[data-theme="dark"] .price-row .p-time { color: var(--gold-hi); }
 html[data-theme="dark"] .eyebrow { color: var(--gold); }
 
 .nav-desktop a { white-space: nowrap; }
+
+/* ============================================================
+   Мобильная читаемость и удобство нажатия
+   Аудитория 40+: мелкий кегль и низкие ссылки — главные раздражители
+   ============================================================ */
+
+.theme-btn { width: 44px; height: 44px; }
+
+@media (max-width: 700px) {
+  /* подпись под логотипом была 9.6px — почти нечитаемо */
+  .brand .b-sub { font-size: .66rem; letter-spacing: .2em; }
+  .guide-card .g-step, .guide-card.flagship .g-badge { font-size: .76rem; }
+  .site-footer h4 { font-size: .8rem; letter-spacing: .18em; }
+  .mobile-menu .mm-label { font-size: .76rem; letter-spacing: .2em; }
+  .crumbs a { display: inline-block; padding: 8px 2px; }
+
+  /* ссылки-навигация: палец должен попадать без прицеливания */
+  .site-footer { font-size: .92rem; }
+  .site-footer ul { gap: 2px; }
+  .site-footer ul a { display: inline-block; padding: 9px 0; }
+  .footer-legal { font-size: .8rem; }
+  .mm-contact a, .f-contacts a { padding-block: 6px; }
+}
+@media (max-width: 360px) {
+  /* на iPhone SE заголовок ломался на шесть строк */
+  h1 { font-size: 1.85rem; }
+  .hero .lead { font-size: .96rem; }
+}
+
+/* вся карточка программы — одна большая кнопка: на телефоне
+   попадать пальцем в заголовок из двух слов неудобно */
+.guide-card h3 a::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--radius); }
+.guide-card h3 a:focus-visible::after { outline: 3px solid var(--gold); outline-offset: -3px; }
