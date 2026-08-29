@@ -379,7 +379,36 @@ def thanks_page(item):
     """Страница выдачи после оплаты — своя на каждый товар."""
     slug, title, price = item['slug'], item['title'], fmt(item['price'])
     root = '../../'
-    if slug in VIDEO:
+    extra = ''
+    if slug == 'kurs':
+        # Курс — это комплект: методичка плюс все пять программ.
+        # Внутри методички автор ссылается на «урок №2 Антипаразитарная чистка»,
+        # а лимфы и видео самомассажа в ней нет вовсе — поэтому отдаём всё сразу.
+        kfile, khuman = FILES['kurs']
+        parts = []
+        for g in GUIDES:
+            if g['slug'] in VIDEO:
+                links = ' · '.join(
+                    f'<a href="{root}files/{v}" download>урок {i}</a>'
+                    for i, v in enumerate(VIDEO[g['slug']], 1))
+                parts.append(f'<li><b>{g["title"]}</b> — видео: {links}</li>')
+            else:
+                fn, hm = FILES[g['slug']]
+                parts.append(f'<li><a href="{root}files/{fn}" download="{hm}"><b>{g["title"]}</b></a> — PDF</li>')
+        block = f'''<div class="g-buy-btns" style="justify-content:center">
+            <a class="btn btn-gold" href="{root}files/{kfile}" download="{khuman}">{ICONS['download']} Скачать методичку курса</a>
+          </div>
+          <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">82 страницы: теория, питание и тюбажная система.</p>'''
+        extra = f'''
+      <div class="article" style="margin:0 auto 34px">
+        <h2>Все пять программ — отдельными файлами</h2>
+        <p>Они входят в вашу покупку. Скачайте сразу все: методичка курса ведёт по системе, а программы — это подробные протоколы к каждому этапу.</p>
+        <ul>
+          {''.join(parts)}
+        </ul>
+        <div class="note">Антипаразитарная чистка — это <b>второй урок</b>, к нему переходят не сразу. Сначала около пяти недель работаем с питанием и тюбажами: пока не восстановлен отток жёлчи, чистка не даст результата. Порядок ниже.</div>
+      </div>'''
+    elif slug in VIDEO:
         vids = ''.join(f'''
             <a class="btn btn-gold" href="{root}files/{v}" download style="margin:0 0 12px">
               {ICONS['download']} Скачать урок {i}
@@ -400,7 +429,7 @@ def thanks_page(item):
       <div style="max-width:640px;margin:0 auto;text-align:center">
         <p class="eyebrow" style="justify-content:center">Оплата прошла</p>
         <h1 style="margin:16px 0 14px">Спасибо! Материал ваш</h1>
-        <p class="lead" style="margin:0 auto 26px">«{title}» — {price} ₽. Забирайте файл, он остаётся у вас навсегда.</p>
+        <p class="lead" style="margin:0 auto 26px">«{title}» — {price} ₽. {'Забирайте материалы, они остаются у вас навсегда.' if slug == 'kurs' else 'Забирайте файл, он остаётся у вас навсегда.'}</p>
         {block}
       </div>
     </div>
@@ -408,13 +437,19 @@ def thanks_page(item):
 
   <section class="section">
     <div class="wrap">
+      {extra}
       <div class="article" style="margin:0 auto">
-        <h2>С чего начать</h2>
+        <h2>{'Порядок прохождения' if slug == 'kurs' else 'С чего начать'}</h2>
         <ol>
-          <li><b>Прочитайте целиком</b>, не начиная действовать — сначала общая картина, потом практика.</li>
+          {'''<li><b>Прочитайте методичку курса целиком</b>, ещё ничего не меняя — сначала общая картина.</li>
+          <li><b>Рацион питания</b> — с него начинается всё остальное.</li>
+          <li><b>Лимфодренажный протокол</b> — 30 дней подготовки, снимаем отёчную нагрузку.</li>
+          <li><b>Тюбажная система</b> — 5–10 недель, восстанавливаем отток жёлчи. Параллельно осваиваем самомассаж живота.</li>
+          <li><b>Антипаразитарная чистка</b> — только после тюбажей, 2,5–3 месяца.</li>
+          <li><b>Пишите мне в чат сопровождения</b> на каждом этапе — скорректирую под ваше состояние.</li>''' if slug == 'kurs' else '''<li><b>Прочитайте целиком</b>, не начиная действовать — сначала общая картина, потом практика.</li>
           <li><b>Подготовьте всё необходимое</b> по списку из материала.</li>
           <li><b>Выберите дату старта</b> и освободите этот день от лишних дел.</li>
-          <li><b>Задавайте вопросы</b> — я на связи и помогу разобраться.</li>
+          <li><b>Задавайте вопросы</b> — я на связи и помогу разобраться.</li>'''}
         </ol>
         <div class="note">Файл не скачался или открылся с ошибкой? Напишите мне в <a href="{TG}">Telegram</a> или <a href="{WA_BOOK}">WhatsApp</a> — отправлю лично.</div>
       </div>
