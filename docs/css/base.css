@@ -444,6 +444,7 @@ body.menu-open { overflow: hidden; }
   padding: 5px 12px; border-radius: 999px; white-space: nowrap;
 }
 .price-row .p-cost {
+  grid-column: -2 / -1;
   font-family: 'Montserrat', sans-serif; font-size: 1.12rem; font-weight: 700; letter-spacing: -.01em;
   white-space: nowrap; font-variant-numeric: tabular-nums;
 }
@@ -452,7 +453,9 @@ body.menu-open { overflow: hidden; }
 .price-row.p-gift span { font-size: .88rem; color: var(--ink-soft); }
 @media (max-width: 620px) {
   .price-row { grid-template-columns: 1fr auto; }
-  .price-row .p-time { display: none; }
+  .price-row .p-name { grid-column: 1; }
+  .price-row .p-time { grid-column: 1; justify-self: start; }
+  .price-row .p-cost { grid-column: 2; grid-row: 1 / span 2; }
 }
 /* узкие телефоны (320–400): даём названию переноситься, поджимаем поля */
 .price-row .p-name { min-width: 0; overflow-wrap: anywhere; }
