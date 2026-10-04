@@ -48,8 +48,7 @@ PAY = {
     'limfa':    'https://auth.robokassa.ru/merchant/Invoice/4kdYuGB9LE-wvMjgvOXggw',   # 990 ₽
     'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/cw9UuLQa-k625fWDwOz2Fg',   # 2 490 ₽
     'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
-    # Касса курса пока на 14 990 ₽; ссылка на новые 15 000 ₽ ожидается от Андрея/Ксюши.
-    'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',
+    'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
 }
 
 def wa(text):
@@ -96,7 +95,7 @@ KURS = dict(slug='kurs', word='КУРС', title='Курс по восстано�
             subtitle='«Курс Булатного»',
             card='Все пять программ в одной системе + личное сопровождение в закрытом чате на все 3 месяца.',
             lead='Ваше практическое руководство к здоровью: все пять программ, выстроенные в трёхмесячную систему, плюс моё личное сопровождение.',
-            price=15000, img='neck.jpg',
+            price=14990, img='neck.jpg',
             meta='«Курс Булатного» — трёхмесячная программа восстановления ЖКТ: питание, самомассаж, лимфа, тюбажи, антипаразитарная чистка + личное ведение.')
 
 ONLINE = dict(slug='online', title='Онлайн-приём',
@@ -268,10 +267,8 @@ def render_tokens(html, root):
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
     html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
     _pk = PAY.get('kurs')
-    _kurs_price = fmt(KURS['price'])
-    html = html.replace('{KURS_PRICE}', _kurs_price)
-    html = html.replace('{PAY_KURS}', _pk or wa('Здравствуйте, Андрей! Хочу приобрести «Курс по восстановлению ЖКТ» (%s ₽).' % _kurs_price))
-    html = html.replace('{PAY_KURS_LABEL}', 'Оплатить курс' if _pk else 'Купить в WhatsApp')
+    html = html.replace('{PAY_KURS}', _pk or wa('Здравствуйте, Андрей! Хочу приобрести «Курс по восстановлению ЖКТ» (14 990 ₽).'))
+    html = html.replace('{PAY_KURS_LABEL}', 'Оплатить 14 990 ₽' if _pk else 'Купить в WhatsApp')
     html = html.replace('{PAY_KURS_LABEL2}', 'Оплатить курс' if _pk else 'Написать в WhatsApp')
     for k, svg in ICONS.items():
         html = html.replace('{icon:%s}' % k, svg)
