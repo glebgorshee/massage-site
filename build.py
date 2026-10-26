@@ -33,8 +33,9 @@ FILES = {
     'kurs':     ('kurs-4a807ab6af.pdf',     'Курс по восстановлению ЖКТ.pdf'),
 }
 # Видео-уроки (самомассаж): список файлов на сервере
+BALL_VIDEO = 'zhivot-ball-751625ac88.mp4'
 VIDEO = {
-    'zhivot': ['zhivot-d7c9b54e7d-1.mp4', 'zhivot-d7c9b54e7d-2.mp4', 'zhivot-d7c9b54e7d-3.mp4'],
+    'zhivot': ['zhivot-d7c9b54e7d-1.mp4', 'zhivot-d7c9b54e7d-2.mp4', 'zhivot-d7c9b54e7d-3.mp4', BALL_VIDEO],
 }
 
 # Ссылки оплаты (Робокасса). Пока пусто — кнопки ведут в мессенджеры.
@@ -67,10 +68,10 @@ GUIDES = [
          meta='Программа «Рацион питания» — 10 правил, которые разгружают ЖКТ и возвращают лёгкость. Автор — висцеральный терапевт Андрей Булатный.'),
     dict(slug='zhivot', word='ЖИВОТ', step=2,
          title='Самомассаж живота',
-         card='Техника работы с животом своими руками: диафрагма, отток жёлчи, перистальтика, спокойные нервы.',
-         lead='Освойте технику, которой я пользуюсь сам: руки или лопатка для самомассажа — всё, что нужно, чтобы поддерживать внутренние органы в тонусе.',
+         card='Видеоуроки самомассажа живота руками, лопаткой и мячом: техники для самостоятельной практики дома.',
+         lead='Освойте техники самомассажа живота руками, лопаткой и мячом. Четыре видеоурока для домашней практики с учётом противопоказаний.',
          price=1990, img='belly-1.jpg',
-         meta='Программа «Самомассаж живота» от висцерального терапевта: техника, которая улучшает отток жёлчи, перистальтику и снимает напряжение.'),
+         meta='Самомассаж живота от Андрея Булатного: четыре видеоурока, включая технику с мячом для домашней практики. Описание и противопоказания.'),
     dict(slug='limfa', word='ЛИМФА', step=3,
          title='Лимфодренажный протокол',
          card='30-дневная система против отёков и вздутия: нутрицевтики, ферменты, сорбенты и упражнения.',
@@ -264,6 +265,8 @@ def read(name):
         return f.read()
 
 def render_tokens(html, root):
+    if '{ZHIVOT_BALL}' in html:
+        html = html.replace('{ZHIVOT_BALL}', read('zhivot-ball.html'))
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
     html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
     _pk = PAY.get('kurs')
@@ -375,6 +378,21 @@ def guide_page(g, extra_result_html='', article_html=''):
                 og_img=g['img'], canon='%s/' % g['slug'])
 
 
+def ball_lesson(root):
+    """Дополнительный урок входит в самомассаж и в полный курс."""
+    return f'''
+      <div class="article" style="margin:0 auto 44px">
+        {render_tokens(read('zhivot-ball.html'), root)}
+        <p><b>Урок 4 · 11 минут 47 секунд</b></p>
+        <video class="lesson-video" controls playsinline preload="none" width="704" height="1280"
+               poster="{root}img/zhivot-ball-poster.jpg" aria-label="Урок 4. Самомассаж живота с мячом">
+          <source src="{root}files/{BALL_VIDEO}" type="video/mp4">
+          Ваш браузер не поддерживает встроенное видео. <a href="{root}files/{BALL_VIDEO}">Открыть урок с мячом</a>.
+        </video>
+        <p><a class="btn btn-gold" href="{root}files/{BALL_VIDEO}" download>{ICONS['download']} Скачать урок с мячом</a></p>
+      </div>'''
+
+
 def thanks_page(item):
     """Страница выдачи после оплаты — своя на каждый товар."""
     slug, title, price = item['slug'], item['title'], fmt(item['price'])
@@ -389,7 +407,7 @@ def thanks_page(item):
         for g in GUIDES:
             if g['slug'] in VIDEO:
                 links = ' · '.join(
-                    f'<a href="{root}files/{v}" download>урок {i}</a>'
+                    f'<a href="{root}files/{v}" download>урок {i}{" — с мячом" if v == BALL_VIDEO else ""}</a>'
                     for i, v in enumerate(VIDEO[g['slug']], 1))
                 parts.append(f'<li><b>{g["title"]}</b> — видео: {links}</li>')
             else:
@@ -411,16 +429,19 @@ def thanks_page(item):
     elif slug in VIDEO:
         vids = ''.join(f'''
             <a class="btn btn-gold" href="{root}files/{v}" download style="margin:0 0 12px">
-              {ICONS['download']} Скачать урок {i}
+              {ICONS['download']} Скачать урок {i}{" — с мячом" if v == BALL_VIDEO else ""}
             </a>''' for i, v in enumerate(VIDEO[slug], 1))
         block = f'''<div class="g-buy-btns" style="flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto">{vids}</div>
-          <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">Три видеоурока. Можно смотреть онлайн или сохранить на телефон.</p>'''
+          <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">Четыре видеоурока: руками, лопаткой и мячом. Можно смотреть онлайн или сохранить на телефон.</p>'''
     else:
         fname, human = FILES[slug]
         block = f'''<div class="g-buy-btns" style="justify-content:center">
             <a class="btn btn-gold" href="{root}files/{fname}" download="{human}">{ICONS['download']} Скачать программу</a>
           </div>
           <p class="btn-note" style="color:rgba(240,231,212,.55);text-align:center">Файл PDF — откроется на телефоне и на компьютере. Сохраните его себе.</p>'''
+
+    if slug in ('zhivot', 'kurs'):
+        extra += ball_lesson(root)
 
     body = f'''
 <main>
@@ -429,7 +450,7 @@ def thanks_page(item):
       <div style="max-width:640px;margin:0 auto;text-align:center">
         <p class="eyebrow" style="justify-content:center">Оплата прошла</p>
         <h1 style="margin:16px 0 14px">Спасибо! Материал ваш</h1>
-        <p class="lead" style="margin:0 auto 26px">«{title}» — {price} ₽. {'Забирайте материалы, они остаются у вас навсегда.' if slug == 'kurs' else 'Забирайте файл, он остаётся у вас навсегда.'}</p>
+        <p class="lead" style="margin:0 auto 26px">«{title}» — {price} ₽. {'Забирайте материалы, они остаются у вас навсегда.' if slug == 'kurs' or slug in VIDEO else 'Забирайте файл, он остаётся у вас навсегда.'}</p>
         {block}
       </div>
     </div>
