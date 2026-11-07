@@ -1,4 +1,5 @@
 .guide-card .morning-thumb img, .morning-cover img { object-position: center 14%; }
+.guide-card .g-foot .btn { position: relative; z-index: 1; }
 .morning-cover img { aspect-ratio: 4 / 3; height: auto; }
 .morning-status { color: var(--gold-hi); font-size: 1.13rem; font-weight: 700; }
 .morning-hero .btn-note a { color: var(--gold-hi); }

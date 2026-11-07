@@ -52,12 +52,13 @@ PAY = {
     'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/cw9UuLQa-k625fWDwOz2Fg',   # 2 490 ₽
     'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
     'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
+    'osoznannoe-utro': 'https://auth.robokassa.ru/merchant/Invoice/R63cDmfyFUGCCD44p7kQ5g',  # 990 ₽
 }
 
 MORNING_SLUG = 'osoznannoe-utro'
 MORNING_TITLE = 'Осознанное утро'
 MORNING_POSTER = 'osoznannoe-utro-poster.jpg'
-MORNING_PRICE = None  # Утверждённая цена в рублях. Многоразовую ссылку добавить в PAY.
+MORNING_PRICE = 990
 
 def wa(text):
     return 'https://wa.me/%s?text=%s' % (PHONE_RAW, urllib.parse.quote(text))
@@ -410,6 +411,7 @@ def morning_pages():
     status = 'Скоро в продаже'
     cta = '<a class="btn btn-dark-outline" href="#practice">О комплексе {icon:arrow}</a>'
     payment_note = ''
+    card_action = '<span class="g-more">Подробнее {icon:arrow}</span>'
     if pay:
         url = urllib.parse.urlsplit(pay)
         if not isinstance(MORNING_PRICE, int) or MORNING_PRICE <= 0:
@@ -419,13 +421,14 @@ def morning_pages():
         status = f'{fmt(MORNING_PRICE)} ₽'
         cta = f'<a class="btn btn-gold" href="{escape(pay, quote=True)}">{{icon:card}} Купить видео</a>'
         payment_note = '\n          <p class="btn-note">После оплаты ссылка на видео придёт на вашу почту. <a href="../oferta/">Условия покупки</a></p>'
+        card_action = f'<a class="btn btn-gold" href="{escape(pay, quote=True)}" aria-label="Купить видеокомплекс «{MORNING_TITLE}» за {status}">Купить</a>'
 
     card = f'''<article class="guide-card reveal">
         <div class="g-img morning-thumb"><span class="g-step">Видеоурок</span><img src="img/{MORNING_POSTER}" alt="" loading="lazy" width="720" height="1280"></div>
         <div class="g-body">
           <h3><a href="{MORNING_SLUG}/">{MORNING_TITLE}</a></h3>
           <p class="g-desc">Дыхание и мягкие движения после пробуждения для поддержки работы кишечника.</p>
-          <div class="g-foot"><span class="g-price">{status}</span><span class="g-more">Подробнее {{icon:arrow}}</span></div>
+          <div class="g-foot"><span class="g-price">{status}</span>{card_action}</div>
         </div>
       </article>'''
     product = (read('osoznannoe-utro.html').replace('{MORNING_STATUS}', status)
