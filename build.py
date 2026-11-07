@@ -4,6 +4,8 @@
 Контент страниц: content/*.html  →  сборка: python3 build.py  →  site/"""
 
 import os, re, urllib.parse, hashlib
+from html import escape
+from pathlib import Path
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, 'docs')
@@ -51,6 +53,11 @@ PAY = {
     'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
     'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
 }
+
+MORNING_SLUG = 'osoznannoe-utro'
+MORNING_TITLE = 'Осознанное утро'
+MORNING_POSTER = 'osoznannoe-utro-poster.jpg'
+MORNING_PRICE = None  # Утверждённая цена в рублях. Многоразовую ссылку добавить в PAY.
 
 def wa(text):
     return 'https://wa.me/%s?text=%s' % (PHONE_RAW, urllib.parse.quote(text))
@@ -227,10 +234,15 @@ def version_images(html):
         return 'src="%s?v=%s"' % (path, h)
     return re.sub(r'src="((?:\.\./)*img/([\w.-]+))"', sub, html)
 
-def page(root, title, meta, body, og_img=None, lenis=False, canon=''):
+def page(root, title, meta, body, og_img=None, lenis=False, canon='', unlisted=False, style=None):
     lenis_tag = ''
-    og = f'<meta property="og:image" content="{SITE}/{canon}img/{og_img}">' if og_img else ''
+    og = ''
+    if og_img:
+        image_path = og_img if og_img.startswith('/') else f'/{canon}img/{og_img}'
+        og = f'<meta property="og:image" content="{SITE}{image_path}">'
     canonical = f'<link rel="canonical" href="{SITE}/{canon}">'
+    privacy = '\n<meta name="robots" content="noindex, nofollow">\n<meta name="referrer" content="no-referrer">' if unlisted else ''
+    extra_css = f'\n<link rel="stylesheet" href="{root}css/{style}?v={_v(f"css/{style}")}">' if style else ''
     return f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -241,13 +253,13 @@ def page(root, title, meta, body, og_img=None, lenis=False, canon=''):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{meta}">
 <meta name="theme-color" content="#241812">
-{canonical}
+{canonical}{privacy}
 <meta property="og:url" content="{SITE}/{canon}">
 {og}
 <link rel="icon" type="image/png" href="{root}img/favicon.png">
 <script>(function(){{try{{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}}catch(e){{}}}})()</script>
 <link rel="stylesheet" href="{root}css/fonts.css?v={_v('css/fonts.css')}">
-<link rel="stylesheet" href="{root}css/base.css?v={_v('css/base.css')}">
+<link rel="stylesheet" href="{root}css/base.css?v={_v('css/base.css')}">{extra_css}
 {lenis_tag}
 </head>
 <body>
@@ -393,6 +405,57 @@ def ball_lesson(root):
       </div>'''
 
 
+def morning_pages():
+    pay = PAY.get(MORNING_SLUG)
+    status = 'Скоро в продаже'
+    cta = '<a class="btn btn-dark-outline" href="#practice">О комплексе {icon:arrow}</a>'
+    payment_note = ''
+    if pay:
+        url = urllib.parse.urlsplit(pay)
+        if not isinstance(MORNING_PRICE, int) or MORNING_PRICE <= 0:
+            raise ValueError('Укажите утверждённую цену «Осознанного утра»')
+        if url.scheme != 'https' or url.netloc != 'auth.robokassa.ru' or not re.fullmatch(r'/merchant/Invoice/[\w-]+/?', url.path, re.I):
+            raise ValueError('Нужна многоразовая ссылка на оплату из Робокассы')
+        status = f'{fmt(MORNING_PRICE)} ₽'
+        cta = f'<a class="btn btn-gold" href="{escape(pay, quote=True)}">{{icon:card}} Купить видео</a>'
+        payment_note = '\n          <p class="btn-note">После оплаты ссылка на видео придёт на вашу почту. <a href="../oferta/">Условия покупки</a></p>'
+
+    card = f'''<article class="guide-card reveal">
+        <div class="g-img morning-thumb"><span class="g-step">Видеоурок</span><img src="img/{MORNING_POSTER}" alt="" loading="lazy" width="720" height="1280"></div>
+        <div class="g-body">
+          <h3><a href="{MORNING_SLUG}/">{MORNING_TITLE}</a></h3>
+          <p class="g-desc">Дыхание и мягкие движения после пробуждения для поддержки работы кишечника.</p>
+          <div class="g-foot"><span class="g-price">{status}</span><span class="g-more">Подробнее {{icon:arrow}}</span></div>
+        </div>
+      </article>'''
+    product = (read('osoznannoe-utro.html').replace('{MORNING_STATUS}', status)
+               .replace('{MORNING_CTA}', cta).replace('{MORNING_PAYMENT_NOTE}', payment_note)
+               .replace('{MORNING_POSTER}', MORNING_POSTER))
+    return card, {
+        f'{MORNING_SLUG}/index.html': page('../', f'{MORNING_TITLE} · {BRAND}',
+            'Видеокомплекс Андрея Булатного для мягкой утренней практики. Дыхание и простые упражнения стоя и сидя.',
+            render_tokens(product, '../'), og_img=f'/img/{MORNING_POSTER}', canon=f'{MORNING_SLUG}/',
+            style='morning.css'),
+        f'spasibo/{MORNING_SLUG}/index.html': page('../../', f'Доступ к уроку · {MORNING_TITLE}',
+            'Как открыть видео «Осознанное утро» после покупки.',
+            render_tokens(read('osoznannoe-utro-success.html'), '../../'),
+            canon=f'spasibo/{MORNING_SLUG}/', unlisted=True),
+    }
+
+
+def build_morning_lesson(key):
+    """Собирает выдачу по непубличной ссылке. Ключ и видео хранятся вне Git."""
+    if not re.fullmatch(r'[a-f0-9]{48}', key):
+        raise ValueError('Ключ доступа должен быть сгенерирован через secrets.token_hex(24)')
+    root = '../../../'
+    folder = Path(OUT, 'spasibo', MORNING_SLUG, key)
+    folder.mkdir(parents=True, exist_ok=True)
+    body = render_tokens(read('osoznannoe-utro-lesson.html').replace('{MORNING_POSTER}', MORNING_POSTER), root)
+    html = page(root, f'{MORNING_TITLE} · Видеоурок', 'Видеокомплекс Андрея Булатного.', body,
+                canon=f'{MORNING_SLUG}/', unlisted=True, style='morning.css')
+    (folder / 'index.html').write_text(version_images(html), encoding='utf-8')
+
+
 def thanks_page(item):
     """Страница выдачи после оплаты — своя на каждый товар."""
     slug, title, price = item['slug'], item['title'], fmt(item['price'])
@@ -492,12 +555,13 @@ def thanks_page(item):
                 lenis=False, canon='spasibo/%s/' % slug)
 
 def build():
-    pages = {}
+    morning_card, pages = morning_pages()
 
     # главная
     pages['index.html'] = page('', '%s — программы восстановления, массаж и программы' % BRAND_FULL,
         'Восстановительный массаж, висцеральная терапия, гирудотерапия и авторские программы по восстановлению ЖКТ. Москва, м. Таганская. Онлайн-приёмы.',
-        render_tokens(read('index.html'), ''), og_img='hero.jpg', canon='')
+        render_tokens(read('index.html').replace('{MORNING_CARD}', morning_card), ''), og_img='hero.jpg',
+        canon='', style='morning.css')
 
     # программы
     for g in GUIDES:
@@ -536,6 +600,9 @@ def build():
         with open(path, 'w', encoding='utf-8') as f:
             f.write(version_images(html))
         print('built', rel)
+
+    if key := os.environ.get('MORNING_ACCESS_KEY'):
+        build_morning_lesson(key)
 
 if __name__ == '__main__':
     build()

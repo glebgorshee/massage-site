@@ -1,0 +1,9 @@
+.guide-card .morning-thumb img, .morning-cover img { object-position: center 14%; }
+.morning-cover img { aspect-ratio: 4 / 3; height: auto; }
+.morning-status { color: var(--gold-hi); font-size: 1.13rem; font-weight: 700; }
+.morning-hero .btn-note a { color: var(--gold-hi); }
+.morning-watch .lesson-video { width: 310px; margin: 0 auto; }
+.morning-watch .btn-note { margin-top: 18px; }
+@media (max-width: 860px) {
+  .morning-hero .g-hero-photo { order: 0; max-width: 560px; }
+}
