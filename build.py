@@ -53,6 +53,7 @@ PAY = {
     'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
     'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
     'osoznannoe-utro': 'https://auth.robokassa.ru/merchant/Invoice/R63cDmfyFUGCCD44p7kQ5g',  # 990 ₽
+    'lopatka': 'https://auth.robokassa.ru/merchant/Invoice/PWXu18AIxEylc1FriUr6sA',  # 1 490 ₽
 }
 
 MORNING_SLUG = 'osoznannoe-utro'
@@ -282,6 +283,7 @@ def render_tokens(html, root):
         html = html.replace('{ZHIVOT_BALL}', read('zhivot-ball.html'))
     html = html.replace('{ROOT}', root).replace('{PHONE_PRETTY}', PHONE_PRETTY).replace('{PHONE_RAW}', PHONE_RAW)
     html = html.replace('{WA_BOOK}', WA_BOOK).replace('{WA_ONLINE}', WA_ONLINE).replace('{TG}', TG)
+    html = html.replace('{PAY_SPATULA}', escape(PAY['lopatka'], quote=True))
     _pk = PAY.get('kurs')
     html = html.replace('{PAY_KURS}', _pk or wa('Здравствуйте, Андрей! Хочу приобрести «Курс по восстановлению ЖКТ» (14 990 ₽).'))
     html = html.replace('{PAY_KURS_LABEL}', 'Оплатить 14 990 ₽' if _pk else 'Купить в WhatsApp')
