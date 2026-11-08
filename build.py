@@ -592,6 +592,9 @@ def build():
     pages['spasibo/index.html'] = page('../', 'Спасибо за покупку · %s' % BRAND,
         'Оплата прошла успешно. Материал отправлен на вашу почту.',
         render_tokens(read('spasibo.html'), '../'), lenis=False, canon='spasibo/')
+    pages['spasibo/lopatka/index.html'] = page('../../', f'Спасибо за покупку · {BRAND}',
+        'Как согласовать получение лопатки для самомассажа живота.',
+        render_tokens(read('lopatka-success.html'), '../../'), canon='spasibo/lopatka/', unlisted=True)
 
     # юридические
     pages['oferta/index.html'] = page('../', 'Публичная оферта · %s' % BRAND,
