@@ -2,9 +2,62 @@
 .guide-card .g-foot .btn { position: relative; z-index: 1; }
 .morning-cover img { aspect-ratio: 4 / 3; height: auto; }
 .morning-status { color: var(--gold-hi); font-size: 1.13rem; font-weight: 700; }
+.morning-hero .btn-note { color: rgba(240, 231, 212, .78); font-size: .875rem; }
 .morning-hero .btn-note a { color: var(--gold-hi); }
 .morning-watch .lesson-video { width: 310px; margin: 0 auto; }
 .morning-watch .btn-note { margin-top: 18px; }
+
+.morning-hero .morning-hook {
+  color: var(--gold-hi);
+  font-size: clamp(1.55rem, 3vw, 2.05rem);
+  text-wrap: balance;
+}
+.morning-hero .morning-hook + .lead { margin-top: 12px; }
+.morning-section { padding-block: clamp(42px, 6vw, 72px); }
+.morning-section[id] { scroll-margin-top: var(--header-h); }
+.morning-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 5vw, 66px);
+}
+.morning-text h2 + p, .morning-safety h3 + p { margin-top: 12px; }
+.morning-signs {
+  display: grid;
+  gap: 12px;
+  padding-left: 1.2em;
+}
+.morning-signs li::marker { color: var(--gold-deep); }
+.morning-fit .morning-signs { margin-top: 14px; }
+.morning-fit, .morning-safety {
+  background: var(--card);
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: var(--radius);
+}
+.morning-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  margin: 24px 0 26px;
+  padding-left: 1.25em;
+}
+.morning-steps li::marker { color: var(--ink-soft); font-weight: 700; }
+.morning-steps h3 { display: inline; }
+.morning-steps h3 + p { margin-top: 8px; }
+.morning-companion, .morning-safety { max-width: 78ch; }
+.morning-safety { margin-top: 22px; }
+.morning-finish h3 { color: var(--gold-hi); }
+.morning-finish .g-buy { margin-top: 14px; }
+
 @media (max-width: 860px) {
+  .morning-hero .g-hero-grid { grid-template-columns: 1.15fr .85fr; gap: 26px; }
   .morning-hero .g-hero-photo { order: 0; max-width: 560px; }
+}
+@media (max-width: 700px) {
+  .morning-hero { padding-block: 28px 44px; }
+  .morning-hero .g-hero-grid { grid-template-columns: 1fr; }
+  .morning-hero .crumbs { margin-bottom: 14px; }
+  .morning-hero h1 { margin-block: 10px 12px; }
+  .morning-hero .g-buy { margin-top: 22px; }
+  .morning-split, .morning-steps { grid-template-columns: 1fr; }
 }
