@@ -21,7 +21,7 @@
   align-items: start;
   gap: clamp(24px, 5vw, 66px);
 }
-.morning-text h2 + p, .morning-safety h3 + p { margin-top: 12px; }
+.morning-text h2 + p { margin-top: 12px; }
 .morning-signs {
   display: grid;
   gap: 12px;
@@ -29,7 +29,7 @@
 }
 .morning-signs li::marker { color: var(--gold-deep); }
 .morning-fit .morning-signs { margin-top: 14px; }
-.morning-fit, .morning-safety {
+.morning-fit {
   background: var(--card);
   padding: clamp(20px, 3vw, 32px);
   border-radius: var(--radius);
@@ -44,8 +44,7 @@
 .morning-steps li::marker { color: var(--ink-soft); font-weight: 700; }
 .morning-steps h3 { display: inline; }
 .morning-steps h3 + p { margin-top: 8px; }
-.morning-companion, .morning-safety { max-width: 78ch; }
-.morning-safety { margin-top: 22px; }
+.morning-companion { max-width: 78ch; }
 .morning-finish h3 { color: var(--gold-hi); }
 .morning-finish .g-buy { margin-top: 14px; }
 
