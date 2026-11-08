@@ -52,8 +52,8 @@ PAY = {
     'tubazh':   'https://auth.robokassa.ru/merchant/Invoice/cw9UuLQa-k625fWDwOz2Fg',   # 2 490 ₽
     'parazity': 'https://auth.robokassa.ru/merchant/Invoice/0TUEqNhxhUOyET23I6acJA',   # 2 990 ₽
     'kurs':     'https://auth.robokassa.ru/merchant/Invoice/b89cZaaTBkiDRNgC5Fs1Iw',   # 14 990 ₽
-    'osoznannoe-utro': 'https://auth.robokassa.ru/merchant/Invoice/R63cDmfyFUGCCD44p7kQ5g',  # 990 ₽
-    'lopatka': 'https://auth.robokassa.ru/merchant/Invoice/PWXu18AIxEylc1FriUr6sA',  # 1 490 ₽
+    'osoznannoe-utro': 'https://auth.robokassa.ru/merchant/Invoice/FBncRWElVku9_S-q0h6hgw',  # 990 ₽
+    'lopatka': 'https://auth.robokassa.ru/merchant/Invoice/6tpCNibJT0mSBFpckMapkg',  # 1 490 ₽
 }
 
 MORNING_SLUG = 'osoznannoe-utro'
